@@ -281,14 +281,14 @@ exports.setupWSConnection = (conn, req, { docName = req.url.slice(1).split('?')[
 
 // Emit the nodes and edges every 30 seconds
 setInterval(() => {
-  let socket = io('wss://hyeontae.shop/ws');
+  let socket = io('https://hyeontae.shop');
   console.log('sending🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥')
   const nodes = doc.getMap('nodes').toJSON();
   const edges = doc.getMap('edges').toJSON();
   console.log('NODES: ', nodes);
 
   socket.on('connect', () => {
-    console.log('연결 성공 ~~ ')
+    console.log('연결 성공 ~~!! ')
     const clientCount = doc.getClientCount(); // Get the client count
     const emitData = {}; // initialize an empty object
     emitData[docName] = { // use the docName as a dynamic key
