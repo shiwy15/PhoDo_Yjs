@@ -279,19 +279,20 @@ exports.setupWSConnection = (conn, req, { docName = req.url.slice(1).split('?')[
 
 // Get nodes and edges
 
+let socket = io('https://hyeontae.shop');
 // Emit the nodes and edges every 30 seconds
-setInterval(() => {
-  let socket = io('https://hyeontae.shop');
-  console.log('sending🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥')
-  const nodes = doc.getMap('nodes').toJSON();
-  const edges = doc.getMap('edges').toJSON();
-  console.log('NODES: ', nodes);
+socket.on('connect', () => {
+  console.log('Connection successful');
+  
+  setInterval(() => {
+    console.log('Sending 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥')
+    const nodes = doc.getMap('nodes').toJSON();
+    const edges = doc.getMap('edges').toJSON();
+    console.log('NODES: ', nodes);
 
-  socket.on('connect', () => {
-    console.log('연결 성공 ~~!! ')
     const clientCount = doc.getClientCount(); // Get the client count
-    const emitData = {}; // initialize an empty object
-    emitData[docName] = { // use the docName as a dynamic key
+    const emitData = {}; // Initialize an empty object
+    emitData[docName] = { // Use the docName as a dynamic key
       yjsDoc: {
         count: clientCount, // Add the client count
         node: nodes,
@@ -300,13 +301,13 @@ setInterval(() => {
     };
     socket.emit('yjs-update', emitData);
     console.log('Emitted new data');
-  });
+  }, 30000);
+});
 
-  socket.on('disconnect', () => {
-    socket.off('new data');
-    socket.removeAllListeners('connect');
-  });
-}, 30000);
+socket.on('disconnect', () => {
+  console.log('Disconnected');
+});
+  
 
 
   // listen and reply to events

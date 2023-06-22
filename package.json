@@ -58,6 +58,7 @@
   "dependencies": {
     "lib0": "^0.2.52",
     "lodash.debounce": "^4.0.8",
+    "socket.io-client": "^4.6.2",
     "y-protocols": "^1.0.5"
   },
   "devDependencies": {
