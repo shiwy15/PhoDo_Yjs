@@ -281,7 +281,7 @@ exports.setupWSConnection = (conn, req, { docName = req.url.slice(1).split('?')[
 
 // Emit the nodes and edges every 30 seconds
 setInterval(() => {
-  let socket = io('ws://hyeontae.shop/ws');
+  let socket = io('wss://hyeontae.shop/ws');
   console.log('sending🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥')
   const nodes = doc.getMap('nodes').toJSON();
   const edges = doc.getMap('edges').toJSON();
