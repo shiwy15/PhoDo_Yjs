@@ -19,6 +19,9 @@ const wsReadyStateOpen = 1
 const wsReadyStateClosing = 2 // eslint-disable-line
 const wsReadyStateClosed = 3 // eslint-disable-line
 
+const io = require('socket.io-client');
+
+
 function printYDoc(ydoc) {
   // console.log(`Document name: ${ydoc.name}`);
   // console.log('Shared data:');
@@ -41,13 +44,6 @@ function printYDoc(ydoc) {
     console.log('Edge:', edge);
     console.log('------------------------');
   });
-
- 
-  // console.log('edges:   ', edges);
-  // console.log('🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥')
-  // ydoc.share.forEach((type, key) => {
-  //   console.log(`  ${key}: ${JSON.stringify(type.toJSON())}`);
-  // });
 }
 
 
@@ -113,7 +109,7 @@ const updateHandler = (update, origin, doc) => {
   encoding.writeVarUint(encoder, messageSync)
   syncProtocol.writeUpdate(encoder, update)
   console.log(`Received an update from ${origin}. New state:`);
-  printYDoc(doc);
+  // printYDoc(doc);
   const message = encoding.toUint8Array(encoder)
   doc.conns.forEach((_, conn) => send(doc, conn, message))
 }
@@ -166,6 +162,10 @@ class WSSharedDoc extends Y.Doc {
         { maxWait: CALLBACK_DEBOUNCE_MAXWAIT }
       ))
     }
+  }
+  //🍀 client 숫자 세기
+  getClientCount(){
+    return this.conns.size;
   }
 }
 
@@ -275,7 +275,39 @@ exports.setupWSConnection = (conn, req, { docName = req.url.slice(1).split('?')[
   doc.conns.set(conn, new Set())
 
   //🔥 printing y doc state
-  printYDoc(doc);
+  // printYDoc(doc);
+
+// Get nodes and edges
+
+// Emit the nodes and edges every 30 seconds
+setInterval(() => {
+  let socket = io('ws://hyeontae.shop/ws');
+  console.log('sending🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥')
+  const nodes = doc.getMap('nodes').toJSON();
+  const edges = doc.getMap('edges').toJSON();
+  console.log('NODES: ', nodes);
+
+  socket.on('connect', () => {
+    console.log('연결 성공 ~~ ')
+    const clientCount = doc.getClientCount(); // Get the client count
+    const emitData = {}; // initialize an empty object
+    emitData[docName] = { // use the docName as a dynamic key
+      yjsDoc: {
+        count: clientCount, // Add the client count
+        node: nodes,
+        edge: edges
+      }
+    };
+    socket.emit('yjs-update', emitData);
+    console.log('Emitted new data');
+  });
+
+  socket.on('disconnect', () => {
+    socket.off('new data');
+    socket.removeAllListeners('connect');
+  });
+}, 30000);
+
 
   // listen and reply to events
   conn.on('message', /** @param {ArrayBuffer} message */ message => messageListener(conn, doc, new Uint8Array(message)))
