@@ -286,8 +286,12 @@ socket.on('connect', () => {
   
   setInterval(() => {
     console.log('Sending 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥')
-    const nodes = doc.getMap('nodes').toJSON();
-    const edges = doc.getMap('edges').toJSON();
+    const nodesObj = doc.getMap('nodes').toJSON();
+    const edgesObj = doc.getMap('edges').toJSON();
+
+    // Transform nodes object into an array
+    const nodes = Object.keys(nodesObj).map(key => nodesObj[key]);
+    const edges = Object.keys(edgesObj).map(key => edgesObj[key]);
     console.log('NODES: ', nodes);
 
     const clientCount = doc.getClientCount(); // Get the client count
@@ -301,8 +305,9 @@ socket.on('connect', () => {
     };
     socket.emit('yjs-update', emitData);
     console.log('Emitted new data');
-  }, 30000);
+  }, 3000);
 });
+
 
 socket.on('disconnect', () => {
   console.log('Disconnected');
