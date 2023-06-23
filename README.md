@@ -1,6 +1,6 @@
 
-# y-websocket :tophat:
-> WebSocket Provider for Yjs
+# y-websocket, react flow를 이용한 웹소켓 서버
+> WebSocket Provider for Yjs, React flow
 
 The Websocket Provider implements a classical client server model. Clients connect to a single endpoint over Websocket. The server distributes awareness information and document updates among clients.
 
