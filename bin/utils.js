@@ -297,7 +297,9 @@ socket.on('connect', () => {
     const clientCount = doc.getClientCount(); // Get the client count
     const emitData = {}; // Initialize an empty object
     console.log(docName);
-    emitData[docName] = { // Use the docName as a dynamic key
+    const docId = docName.split('/')[1];
+
+    emitData[docId] = { // Use the docName as a dynamic key
       yjsDoc: {
         count: clientCount, // Add the client count
         node: nodes,
