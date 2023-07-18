@@ -109,7 +109,7 @@ const updateHandler = (update, origin, doc) => {
   encoding.writeVarUint(encoder, messageSync)
   syncProtocol.writeUpdate(encoder, update)
   console.log(`Received an update from ${origin}. New state:`);
-  // printYDoc(doc);
+  printYDoc(doc);
   const message = encoding.toUint8Array(encoder)
   doc.conns.forEach((_, conn) => send(doc, conn, message))
 }
@@ -278,44 +278,6 @@ exports.setupWSConnection = (conn, req, { docName = req.url.slice(1).split('?')[
   // printYDoc(doc);
 
 // Get nodes and edges
-
-let socket = io('https://hyeontae.shop');
-// Emit the nodes and edges every 30 seconds
-socket.on('connect', () => {
-  console.log('Connection successful');
-  
-  setInterval(() => {
-    console.log('Sending 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥')
-    const nodesObj = doc.getMap('nodes').toJSON();
-    const edgesObj = doc.getMap('edges').toJSON();
-
-    // Transform nodes object into an array
-    const nodes = Object.keys(nodesObj).map(key => nodesObj[key]);
-    const edges = Object.keys(edgesObj).map(key => edgesObj[key]);
-    console.log('NODES: ', nodes);
-
-    const clientCount = doc.getClientCount(); // Get the client count
-    const emitData = {}; // Initialize an empty object
-    console.log(docName);
-    const docId = docName.split('/')[1];
-
-    emitData[docId] = { // Use the docName as a dynamic key
-      yjsDoc: {
-        count: clientCount, // Add the client count
-        node: nodes,
-        edge: edges
-      }
-    };
-    socket.emit('yjs-update', emitData);
-    console.log('Emitted new data');
-  }, 3000);
-});
-
-
-socket.on('disconnect', () => {
-  console.log('Disconnected');
-});
-  
 
 
   // listen and reply to events
